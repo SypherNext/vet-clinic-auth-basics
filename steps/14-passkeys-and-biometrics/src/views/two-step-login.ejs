@@ -1,0 +1,15 @@
+<%- include('partials/head', { title: 'Two-step login' }) %>
+<section class="card narrow">
+  <h1>One more step</h1>
+  <p>Open your authenticator app and type the <%= digits %>-digit code for <strong><%= clinicName %></strong>.</p>
+  <% if (error) { %><p class="error"><%= error %></p><% } %>
+  <form method="post" action="/login/two-step">
+    <%- include('partials/csrf') %>
+    <label for="code">Code from your app</label>
+    <input id="code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code">
+    <label for="recovery_code">Or a recovery code</label>
+    <input id="recovery_code" name="recovery_code" type="text" autocomplete="off" placeholder="xxxxx-xxxxx">
+    <button type="submit">Continue</button>
+  </form>
+</section>
+<%- include('partials/foot') %>

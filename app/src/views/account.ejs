@@ -1,0 +1,84 @@
+<%- include('partials/head', { title: 'Your account' }) %>
+<h1>Your account</h1>
+<div class="grid">
+<section class="card">
+  <h2>Profile</h2>
+  <p><strong><%= user.name %></strong><br><%= user.email %><br><span class="muted"><%= user.phone ?? 'No phone number' %></span></p>
+  <% if (emailVerified) { %>
+    <p class="ok">Email address confirmed.</p>
+  <% } else { %>
+    <p class="warn">Please confirm your email address. Check your inbox for our link.</p>
+    <form method="post" action="/account/verify-email/resend"><%- include('partials/csrf') %><button class="secondary" type="submit">Send the link again</button></form>
+  <% } %>
+</section>
+
+<section class="card">
+  <h2><%= hasPassword ? 'Change password' : 'Set a password' %></h2>
+  <form method="post" action="/account/password">
+    <%- include('partials/csrf') %>
+    <% if (hasPassword) { %>
+      <label for="current_password">Current password</label>
+      <input id="current_password" name="current_password" type="password" autocomplete="current-password" required>
+    <% } %>
+    <label for="new_password">New password</label>
+    <input id="new_password" name="new_password" type="password" autocomplete="new-password" required>
+    <p class="hint">At least <%= minLength %> characters. Other sessions are logged out.</p>
+    <button type="submit">Save password</button>
+  </form>
+</section>
+
+<section class="card">
+  <h2>Two-step login</h2>
+  <% if (twoStepOn) { %>
+    <p class="ok">On. Your authenticator app is needed after your password.</p>
+    <p class="hint"><%= unusedRecoveryCodes %> unused recovery codes.</p>
+    <a class="button secondary" href="/account/two-step">Manage</a>
+  <% } else { %>
+    <p>Off. Add a code from an authenticator app after your password.</p>
+    <a class="button" href="/account/two-step">Turn on</a>
+  <% } %>
+</section>
+
+<section class="card">
+  <h2>Passkeys</h2>
+  <% if (passkeys.length === 0) { %><p class="muted">No passkeys yet.</p><% } %>
+  <ul class="list">
+  <% for (const p of passkeys) { %>
+    <li><strong><%= p.name %></strong> <span class="muted">added <%= formatTime(p.createdAt) %><%= p.lastUsedAt ? ', last used ' + formatTime(p.lastUsedAt) : '' %></span>
+      <form method="post" action="/account/passkeys/<%= p.id %>/delete"><%- include('partials/csrf') %><button class="link" type="submit">Remove</button></form></li>
+  <% } %>
+  </ul>
+  <label for="passkey_name">Name for a new passkey</label>
+  <input id="passkey_name" name="passkey_name" type="text" value="My laptop" maxlength="40">
+  <button type="button" data-passkey-register>Add a passkey</button>
+  <p data-passkey-status hidden></p>
+</section>
+</div>
+
+<section class="card">
+  <h2>Where you are logged in</h2>
+  <table class="table">
+    <thead><tr><th>Started</th><th>Last active</th><th></th></tr></thead>
+    <tbody>
+    <% for (const s of sessions) { %>
+      <tr><td><%= formatTime(s.created_at) %></td><td><%= formatTime(s.last_seen_at) %></td><td><%= s.current ? 'This browser' : '' %></td></tr>
+    <% } %>
+    </tbody>
+  </table>
+  <form method="post" action="/account/sessions/logout-others"><%- include('partials/csrf') %><button class="secondary" type="submit">Log out everywhere else</button></form>
+</section>
+
+<section class="card">
+  <h2>Recent activity</h2>
+  <table class="table">
+    <thead><tr><th>When</th><th>What</th><th>How</th><th>IP address</th></tr></thead>
+    <tbody>
+    <% for (const e of events) { %>
+      <tr><td><%= formatTime(e.created_at) %></td><td><%= e.label %></td><td><%= e.methodName %></td><td><%= e.ip %></td></tr>
+    <% } %>
+    </tbody>
+  </table>
+</section>
+<script src="/vendor/simplewebauthn/index.umd.min.js"></script>
+<script src="/passkeys.js"></script>
+<%- include('partials/foot') %>

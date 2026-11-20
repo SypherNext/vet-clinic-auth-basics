@@ -1,0 +1,12 @@
+<%- include('partials/head', { title: 'Welcome' }) %>
+<section class="card narrow">
+  <h1>Welcome to the clinic portal</h1>
+  <p>Pet owners see their pets and appointments. Vets see their patients. Admins manage users.</p>
+  <div class="row">
+    <a class="button" href="/login">Log in</a>
+    <a class="button secondary" href="/signup">Create an account</a>
+  </div>
+</section>
+<h2>Other ways to log in</h2>
+<%- include('partials/other-methods', { methods }) %>
+<%- include('partials/foot') %>

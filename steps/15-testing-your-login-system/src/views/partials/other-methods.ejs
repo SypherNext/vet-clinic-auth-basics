@@ -1,0 +1,8 @@
+<div class="methods">
+<% for (const method of methods) { %>
+  <a class="card method" href="<%= method.startPath %>">
+    <h3><%= method.name %></h3>
+    <p class="hint"><%= method.description %></p>
+  </a>
+<% } %>
+</div>

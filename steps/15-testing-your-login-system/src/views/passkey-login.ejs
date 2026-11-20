@@ -1,0 +1,11 @@
+<%- include('partials/head', { title: 'Log in with a passkey' }) %>
+<section class="card narrow">
+  <h1>Log in with a passkey</h1>
+  <p>Your browser or phone will ask you to unlock it with your fingerprint, face or PIN. There is no password to type.</p>
+  <button type="button" data-passkey-login>Log in with a passkey</button>
+  <p data-passkey-status hidden></p>
+  <p class="hint">No passkey yet? Log in another way, then add one on your account page.</p>
+</section>
+<script src="/vendor/simplewebauthn/index.umd.min.js"></script>
+<script src="/passkeys.js"></script>
+<%- include('partials/foot') %>

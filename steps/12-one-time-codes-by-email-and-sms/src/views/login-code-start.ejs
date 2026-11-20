@@ -1,0 +1,17 @@
+<%- include('partials/head', { title: 'Log in with a code' }) %>
+<section class="card narrow">
+  <h1>Log in with a code</h1>
+  <p>We send you a one-time code. You type it on the next page.</p>
+  <% if (error) { %><p class="error"><%= error %></p><% } %>
+  <form method="post" action="/login/code">
+    <%- include('partials/csrf') %>
+    <label for="email">Email</label>
+    <input id="email" name="email" type="email" autocomplete="username" required>
+    <label for="channel">Send the code by</label>
+    <select id="channel" name="channel">
+      <% for (const channel of channels) { %><option value="<%= channel.id %>"><%= channel.label %></option><% } %>
+    </select>
+    <button type="submit">Send me a code</button>
+  </form>
+</section>
+<%- include('partials/foot') %>

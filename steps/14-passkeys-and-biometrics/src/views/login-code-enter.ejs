@@ -1,0 +1,14 @@
+<%- include('partials/head', { title: 'Enter your code' }) %>
+<section class="card narrow">
+  <h1>Enter your code</h1>
+  <p>If an account uses <strong><%= email %></strong>, we sent it a code by <%= channel.label.toLowerCase() %>.</p>
+  <% if (error) { %><p class="error"><%= error %></p><% } %>
+  <form method="post" action="/login/code/enter">
+    <%- include('partials/csrf') %>
+    <label for="code"><%= digits %>-digit code</label>
+    <input id="code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" required>
+    <button type="submit">Log in</button>
+  </form>
+  <p class="hint"><a href="/login/code">Send a new code</a></p>
+</section>
+<%- include('partials/foot') %>

@@ -1,0 +1,16 @@
+<%- include('partials/head', { title: 'Two-step login' }) %>
+<section class="card narrow">
+  <h1>Two-step login is on</h1>
+  <p>You have <strong><%= unusedCodes %></strong> unused recovery codes.</p>
+  <% if (error) { %><p class="error"><%= error %></p><% } %>
+  <h3>Turn it off</h3>
+  <form method="post" action="/account/two-step/disable">
+    <%- include('partials/csrf') %>
+    <label for="code">Current code from your app</label>
+    <input id="code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code">
+    <label for="recovery_code">Or a recovery code</label>
+    <input id="recovery_code" name="recovery_code" type="text" autocomplete="off">
+    <button class="secondary" type="submit">Turn off two-step login</button>
+  </form>
+</section>
+<%- include('partials/foot') %>

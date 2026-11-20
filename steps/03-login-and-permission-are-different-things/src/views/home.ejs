@@ -1,0 +1,17 @@
+<%- include('partials/head', { title: 'Welcome' }) %>
+<section class="card narrow">
+  <h1>Welcome to the clinic portal</h1>
+  <p>Pet owners see their pets and appointments. Vets see their patients. Admins manage users.</p>
+  <% if (!user) { %>
+    <h2>Who are you?</h2>
+    <p class="warn">There is no password yet. The portal believes whatever email you type.</p>
+    <form method="get" action="/pets">
+      <label for="as">Email</label>
+      <input id="as" name="as" type="email" placeholder="olivia@vetclinic.test" required>
+      <button type="submit">Continue</button>
+    </form>
+  <% } else { %>
+    <p>You are browsing as <strong><%= user.name %></strong> (<%= user.email %>).</p>
+  <% } %>
+</section>
+<%- include('partials/foot') %>

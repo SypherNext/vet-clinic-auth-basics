@@ -1,0 +1,14 @@
+<%- include('partials/head', { title: 'SMS outbox (simulated)' }) %>
+<h1>SMS outbox</h1>
+<p class="warn"><strong>Simulation.</strong> No text messages are really sent. This developer page shows the messages the portal would have sent to each phone. It does not exist in production.</p>
+<% if (messages.length === 0) { %><p class="muted">No messages yet.</p><% } else { %>
+<table class="table">
+  <thead><tr><th>Sent</th><th>To</th><th>Message</th></tr></thead>
+  <tbody>
+  <% for (const m of messages) { %>
+    <tr><td><%= formatTime(m.created_at) %></td><td><%= m.to_phone %></td><td><%= m.body %></td></tr>
+  <% } %>
+  </tbody>
+</table>
+<% } %>
+<%- include('partials/foot') %>

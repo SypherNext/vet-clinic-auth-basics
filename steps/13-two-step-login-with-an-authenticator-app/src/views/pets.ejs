@@ -1,0 +1,21 @@
+<%- include('partials/head', { title: 'My pets' }) %>
+<h1>My pets</h1>
+<% if (pets.length === 0) { %>
+  <p class="muted">No pets on file for this account yet. The clinic adds them at your first visit.</p>
+<% } %>
+<div class="grid">
+<% for (const pet of pets) { %>
+  <section class="card">
+    <h2><%= pet.name %></h2>
+    <p class="muted"><%= pet.species %><%= pet.breed ? ', ' + pet.breed : '' %>, born <%= pet.born_on %></p>
+    <h3>Appointments</h3>
+    <% if (pet.appointments.length === 0) { %><p class="muted">None booked.</p><% } %>
+    <ul class="list">
+    <% for (const a of pet.appointments) { %>
+      <li><strong><%= a.starts_at %></strong> with <%= a.vet_name %><br><%= a.reason %></li>
+    <% } %>
+    </ul>
+  </section>
+<% } %>
+</div>
+<%- include('partials/foot') %>

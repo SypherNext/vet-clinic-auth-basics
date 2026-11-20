@@ -1,0 +1,25 @@
+<%- include('partials/head', { title: 'Users' }) %>
+<h1>Users</h1>
+<table class="table">
+  <thead><tr><th>Name</th><th>Role</th><th>Sign-in</th><th>Status</th><th>Actions</th></tr></thead>
+  <tbody>
+  <% for (const u of users) { %>
+    <tr>
+      <td><strong><%= u.name %></strong><br><span class="muted"><%= u.email %></span></td>
+      <td><span class="role"><%= u.role %></span></td>
+      <td><%= u.totp_enabled_at ? 'Authenticator app' : 'No second step' %><br><span class="muted"><%= plural(u.passkey_count, 'passkey') %>, <%= plural(u.session_count, 'session') %></span></td>
+      <td>
+        <% if (u.disabled_at) { %><span class="badge bad">Disabled</span><% } else if (u.locked) { %><span class="badge warn">Locked</span><% } else { %><span class="badge good">Active</span><% } %>
+        <% if (!u.email_verified_at) { %><br><span class="muted">Email not confirmed</span><% } %>
+      </td>
+      <td class="actions">
+        <% const isMe = u.id === user.id; const actions = u.disabled_at ? ['enable'] : (isMe ? [] : ['disable', 'logout-everywhere']); if (u.locked) actions.push('unlock'); %>
+        <% for (const action of actions) { %>
+          <form method="post" action="/admin/users/<%= u.id %>/<%= action %>"><%- include('partials/csrf') %><button class="link" type="submit"><%= { enable: 'Enable', disable: 'Disable', 'logout-everywhere': 'Log out everywhere', unlock: 'Unlock' }[action] %></button></form>
+        <% } %>
+      </td>
+    </tr>
+  <% } %>
+  </tbody>
+</table>
+<%- include('partials/foot') %>

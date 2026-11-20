@@ -1,0 +1,20 @@
+<%- include('partials/head', { title: 'Create an account' }) %>
+<section class="card narrow">
+  <h1>Create an account</h1>
+  <p class="muted">For pet owners. Clinic staff accounts are added by an admin.</p>
+  <% if (error) { %><p class="error"><%= error %></p><% } %>
+  <form method="post" action="/signup">
+    <%- include('partials/csrf') %>
+    <label for="name">Your name</label>
+    <input id="name" name="name" type="text" value="<%= values.name ?? '' %>" autocomplete="name" required>
+    <label for="email">Email</label>
+    <input id="email" name="email" type="email" value="<%= values.email ?? '' %>" autocomplete="email" required>
+    <label for="phone">Mobile phone (optional, for login codes by text)</label>
+    <input id="phone" name="phone" type="tel" value="<%= values.phone ?? '' %>" autocomplete="tel">
+    <label for="password">Password</label>
+    <input id="password" name="password" type="password" autocomplete="new-password" required>
+    <p class="hint">At least <%= minLength %> characters. A short sentence is easy to remember and hard to guess. No symbols required.</p>
+    <button type="submit">Create my account</button>
+  </form>
+</section>
+<%- include('partials/foot') %>

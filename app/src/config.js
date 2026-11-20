@@ -1,0 +1,105 @@
+// Every setting the app reads, in one place. Values come from environment
+// variables (or a .env file), with defaults that work on your own computer.
+// Time limits and attempt limits live here too, so there is exactly one
+// place to look when you want to know "how long does a session last?".
+import path from 'node:path';
+
+const root = path.resolve(import.meta.dirname, '..');
+
+export const CLINIC_NAME = 'Maple Street Vet Clinic';
+
+const SECOND = 1000;
+const MINUTE = 60 * SECOND;
+const HOUR = 60 * MINUTE;
+
+export function loadConfig(env = process.env) {
+  const port = Number(env.PORT ?? 18820);
+  const appOrigin = env.APP_ORIGIN ?? `http://localhost:${port}`;
+  const production = env.NODE_ENV === 'production';
+  // Secure cookies are only sent over HTTPS. Production always uses them.
+  const secureCookies = production || env.COOKIE_SECURE === 'true';
+
+  return {
+    port,
+    // 127.0.0.1 means "only this computer can connect".
+    host: env.HOST ?? '127.0.0.1',
+    // The address you type in the browser. Links in emails are built from it.
+    appOrigin,
+    production,
+    // Developer-only pages such as the simulated SMS outbox.
+    devTools: !production,
+    databaseFile: env.DATABASE_FILE ?? path.join(root, 'data', 'vet-clinic.db'),
+    clinicName: CLINIC_NAME,
+
+    sessions: {
+      // The __Host- prefix makes the browser refuse the cookie unless it is
+      // Secure, has Path=/ and no Domain, so it needs HTTPS.
+      cookieName: secureCookies ? '__Host-session' : 'session',
+      secureCookies,
+      // Log out after 30 minutes without a click...
+      idleTimeoutMs: 30 * MINUTE,
+      // ...and after 12 hours no matter what.
+      absoluteTimeoutMs: 12 * HOUR,
+      // A password check passed but the second step is not done yet.
+      pendingLoginMs: 5 * MINUTE,
+    },
+
+    passwords: {
+      // NIST SP 800-63B-4: at least 15 characters when the password is the only factor.
+      minLength: 15,
+      maxLength: 128,
+    },
+
+    lockout: {
+      maxFailedLogins: 5,
+      lockMs: 15 * MINUTE,
+    },
+
+    rateLimits: {
+      // Per IP address, for every form that checks a password or a code.
+      login: { windowMs: 15 * MINUTE, max: 30 },
+      // Per email address, for every form that sends an email or a text.
+      sendMessage: { windowMs: 15 * MINUTE, max: 5 },
+    },
+
+    emailLinks: {
+      verifyEmailMs: 24 * HOUR,
+      resetPasswordMs: 30 * MINUTE,
+      magicLinkMs: 15 * MINUTE,
+    },
+
+    loginCodes: {
+      digits: 6,
+      lifetimeMs: 10 * MINUTE,
+      maxAttempts: 5,
+    },
+
+    authenticatorApp: {
+      issuer: CLINIC_NAME,
+      digits: 6,
+      periodSeconds: 30,
+      // Accept the code before and after the current one, for clock drift.
+      window: 1,
+      // Wrong codes allowed on the two-step page before you start again.
+      maxAttempts: 5,
+      recoveryCodeCount: 10,
+    },
+
+    passkeys: {
+      rpName: CLINIC_NAME,
+      // The relying party ID is the site's domain name, without port or scheme.
+      rpID: new URL(appOrigin).hostname,
+      origin: appOrigin,
+      challengeMs: 5 * MINUTE,
+    },
+
+    mail: {
+      // "smtp" sends to a real mail server (Mailpit on your computer).
+      // "memory" keeps messages in a list (tests) and prints them to the terminal.
+      transport: env.MAIL_TRANSPORT ?? 'smtp',
+      smtpHost: env.SMTP_HOST ?? '127.0.0.1',
+      smtpPort: Number(env.SMTP_PORT ?? 18825),
+      from: `${CLINIC_NAME} <no-reply@vetclinic.test>`,
+    },
+  };
+}

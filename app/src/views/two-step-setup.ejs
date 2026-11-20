@@ -1,0 +1,17 @@
+<%- include('partials/head', { title: 'Turn on two-step login' }) %>
+<section class="card narrow">
+  <h1>Turn on two-step login</h1>
+  <p>After your password, the portal will also ask for a code from an authenticator app on your phone (such as Google Authenticator, Microsoft Authenticator or 1Password).</p>
+  <% if (error) { %><p class="error"><%= error %></p><% } %>
+  <h3>1. Scan this QR code with the app</h3>
+  <img class="qr" src="<%= qrDataUrl %>" alt="QR code for your authenticator app" width="220" height="220">
+  <p class="hint">Cannot scan? Type this key into the app instead: <code><%= secret.match(/.{1,4}/g).join(' ') %></code></p>
+  <h3>2. Type the code the app shows</h3>
+  <form method="post" action="/account/two-step/enable">
+    <%- include('partials/csrf') %>
+    <label for="code">6-digit code</label>
+    <input id="code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" required>
+    <button type="submit">Turn on two-step login</button>
+  </form>
+</section>
+<%- include('partials/foot') %>

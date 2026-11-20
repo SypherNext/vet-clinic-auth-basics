@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= typeof title !== 'undefined' ? title + ' | ' : '' %><%= clinicName %></title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="/<%= asQuery %>"><span class="paw">&#10047;</span> <%= clinicName %></a>
+  <nav>
+    <% if (user) { %>
+      <% if (user.role === 'owner') { %><a href="/pets<%= asQuery %>">My pets</a><% } %>
+      <% if (user.role === 'vet') { %><a href="/patients<%= asQuery %>">My patients</a><% } %>
+      <% if (user.role === 'admin') { %><a href="/admin/users<%= asQuery %>">Users</a><% } %>
+      <span class="who"><%= user.name %> <span class="role"><%= user.role %></span></span>
+    <% } else { %>
+      <span class="who muted">Not signed in</span>
+    <% } %>
+  </nav>
+</header>
+<main>

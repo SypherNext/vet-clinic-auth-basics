@@ -1,0 +1,11 @@
+<%- include('partials/head', { title }) %>
+<section class="card narrow">
+  <h1><%= title %></h1>
+  <p><%= intro %></p>
+  <form method="post" action="<%= action %>">
+    <%- include('partials/csrf') %>
+    <input type="hidden" name="token" value="<%= token %>">
+    <button type="submit"><%= button %></button>
+  </form>
+</section>
+<%- include('partials/foot') %>

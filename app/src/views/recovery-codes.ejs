@@ -1,0 +1,12 @@
+<%- include('partials/head', { title: 'Your recovery codes' }) %>
+<section class="card narrow">
+  <h1>Two-step login is on</h1>
+  <p class="ok">From now on the portal asks for a code from your app after your password.</p>
+  <h3>Save these recovery codes</h3>
+  <p>If you lose your phone, each code below lets you log in once. This is the only time they are shown. Print them or store them in your password manager.</p>
+  <ul class="codes">
+  <% for (const code of codes) { %><li><%= code %></li><% } %>
+  </ul>
+  <a class="button" href="/account">I have saved them</a>
+</section>
+<%- include('partials/foot') %>
